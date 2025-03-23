@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Term Finance Price Calculator</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            text-align: center;
+            background-color: #1e1e2e;
+            color: white;
+            padding: 20px;
+        }
+        .container {
+            background: #2a2a3a;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            max-width: 500px;
+            margin: auto;
+            transition: 0.3s ease-in-out;
+        }
+        .container:hover {
+            transform: scale(1.02);
+        }
+        input, button, select {
+            padding: 12px;
+            margin: 10px;
+            width: 80%;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+        }
+        input {
+            background: #3b3b4f;
+            color: white;
+            text-align: center;
+        }
+        button {
+            background: #ff7b00;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        button:hover {
+            background: #e66a00;
+        }
+        select {
+            background: #3b3b4f;
+            color: white;
+            text-align: center;
+        }
+        .result {
+            margin-top: 20px;
+            font-weight: bold;
+            background: #3b3b4f;
+            padding: 10px;
+            border-radius: 6px;
+        }
+        footer {
+            margin-top: 20px;
+        }
+        a {
+            color: #ff7b00;
+            text-decoration: none;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Term Finance Price Calculator</h2>
+        <p>Enter your Term Points to see estimated token price</p>
+        <input type="number" id="termPoints" placeholder="Enter your Term Points">
+        <select id="calculationType">
+            <option value="hopium">Hopium Calculation</option>
+            <option value="normal">Normal Calculation</option>
+        </select>
+        <button onclick="calculatePrice()">Calculate</button>
+        
+        <div class="result" id="priceOutput"></div>
+        <div class="result" id="userValueOutput"></div>
+        <div class="result" id="vestedOutput"></div>
+    </div>
+
+    <footer>
+        Built by <a href="https://t.me/pipsbills" target="_blank">PipsandBills</a>
+    </footer>
+
+    <script>
+        function calculatePrice() {
+            let termPoints = document.getElementById("termPoints").value;
+            let calculationType = document.getElementById("calculationType").value;
+            
+            if (termPoints <= 0) {
+                alert("Please enter a valid Term Points amount.");
+                return;
+            }
+            
+            let fdvRange = [80000000, 300000000];
+            let totalSupply = 100000000; 
+            
+            let divisor = calculationType === "hopium" ? 67 : 1000;
+            let convertedTokens = termPoints / divisor; 
+            
+            let prices = fdvRange.map(fdv => (fdv / totalSupply).toFixed(2));
+            let priceOutput = `Price Range: $${prices[0]} - $${prices[1]}`;
+            
+            let userValues = prices.map(price => (convertedTokens * price).toFixed(2));
+            let userValueOutput = `Your Term Points Value: $${userValues[0]} - $${userValues[1]}`;
+
+            let vestingStages = [0.1, 0.2, 0.3, 0.4, 0.5];
+            let vestedPrices = vestingStages.map(v => `$${(userValues[1] * v).toFixed(2)}`).join(' - ');
+            let vestedOutput = `Vested Values (10%-50%): ${vestedPrices}`;
+            
+            document.getElementById("priceOutput").innerHTML = priceOutput;
+            document.getElementById("userValueOutput").innerHTML = userValueOutput;
+            document.getElementById("vestedOutput").innerHTML = vestedOutput;
+        }
+    </script>
+</body>
+</html>
